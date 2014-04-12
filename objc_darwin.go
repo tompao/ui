@@ -33,11 +33,11 @@ var (
 	_NSObject = objc_getClass("NSObject")
 	_NSString = objc_getClass("NSString")
 
-	_alloc = sel_getUid("alloc")
-	_new = sel_getUid("new")
-	_release = sel_getUid("release")
+	_alloc                = sel_getUid("alloc")
+	_new                  = sel_getUid("new")
+	_release              = sel_getUid("release")
 	_stringWithUTF8String = sel_getUid("stringWithUTF8String:")
-	_UTF8String = sel_getUid("UTF8String")
+	_UTF8String           = sel_getUid("UTF8String")
 )
 
 func toNSString(str string) C.id {
@@ -58,14 +58,15 @@ func fromNSString(str C.id) string {
 
 // selector contains the information for a new selector.
 type selector struct {
-	name	string
-	imp		uintptr	// not unsafe.Pointer because https://code.google.com/p/go/issues/detail?id=7665
-	itype		itype
-	desc		string	// for error reporting
+	name  string
+	imp   uintptr // not unsafe.Pointer because https://code.google.com/p/go/issues/detail?id=7665
+	itype itype
+	desc  string // for error reporting
 }
 
 // sel_[returntype] or sel_[returntype]_[arguments] (after the required self/sel arguments)
 type itype uint
+
 const (
 	sel_void_id itype = iota
 	sel_bool_id
@@ -76,16 +77,16 @@ const (
 )
 
 var itypes = [nitypes][]C.char{
-	sel_void_id:			[]C.char{'v', '@', ':', '@', 0},
-	sel_bool_id:			[]C.char{'c', '@', ':', '@', 0},
-	sel_bool:				[]C.char{'c', '@', ':', 0},
-	sel_void_rect:			nil,			// see init() below
-	sel_terminatereply_id:	nil,
+	sel_void_id:           []C.char{'v', '@', ':', '@', 0},
+	sel_bool_id:           []C.char{'c', '@', ':', '@', 0},
+	sel_bool:              []C.char{'c', '@', ':', 0},
+	sel_void_rect:         nil, // see init() below
+	sel_terminatereply_id: nil,
 }
 
 func init() {
 	// see encodedNSRect in bleh_darwin.m
-	x := make([]C.char, 0, 256)	// more than enough
+	x := make([]C.char, 0, 256) // more than enough
 	x = append(x, 'v', '@', ':')
 	y := C.GoString(C.encodedNSRect)
 	for _, b := range y {
@@ -94,7 +95,7 @@ func init() {
 	x = append(x, 0)
 	itypes[sel_void_rect] = x
 
-	x = make([]C.char, 0, 256)	// more than enough
+	x = make([]C.char, 0, 256) // more than enough
 	y = C.GoString(C.encodedTerminateReply)
 	for _, b := range y {
 		x = append(x, C.char(b))

@@ -3,7 +3,7 @@
 package ui
 
 import (
-	// ...
+// ...
 )
 
 // MsgBox displays an informational message box to the user with just an OK button.

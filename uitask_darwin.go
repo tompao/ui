@@ -16,15 +16,14 @@ var uitask chan func()
 
 var (
 	_NSAutoreleasePool = objc_getClass("NSAutoreleasePool")
-	_NSValue = objc_getClass("NSValue")
+	_NSValue           = objc_getClass("NSValue")
 
-	_valueWithPointer = sel_getUid("valueWithPointer:")
-	_performSelectorOnMainThread =
-		sel_getUid("performSelectorOnMainThread:withObject:waitUntilDone:")
-	_stop = sel_getUid("stop:")
-	_postEventAtStart = sel_getUid("postEvent:atStart:")
-	_pointerValue = sel_getUid("pointerValue")
-	_run = sel_getUid("run")
+	_valueWithPointer            = sel_getUid("valueWithPointer:")
+	_performSelectorOnMainThread = sel_getUid("performSelectorOnMainThread:withObject:waitUntilDone:")
+	_stop                        = sel_getUid("stop:")
+	_postEventAtStart            = sel_getUid("postEvent:atStart:")
+	_pointerValue                = sel_getUid("pointerValue")
+	_run                         = sel_getUid("run")
 )
 
 func ui(main func()) error {
@@ -49,7 +48,7 @@ func ui(main func()) error {
 				_performSelectorOnMainThread,
 				_uitask,
 				fp,
-				C.BOOL(C.YES))			// wait so we can properly drain the autorelease pool; on other platforms we wind up waiting anyway (since the main thread can only handle one thing at a time) so
+				C.BOOL(C.YES)) // wait so we can properly drain the autorelease pool; on other platforms we wind up waiting anyway (since the main thread can only handle one thing at a time) so
 			C.objc_msgSend_noargs(pool, _release)
 		}
 	}()
@@ -65,7 +64,7 @@ func ui(main func()) error {
 			C.objc_msgSend_id_bool(NSApp,
 				_postEventAtStart,
 				C.makeDummyEvent(),
-				C.BOOL(C.NO))			// not at start, just in case there are other events pending (TODO is this correct?)
+				C.BOOL(C.NO)) // not at start, just in case there are other events pending (TODO is this correct?)
 		}
 	}()
 
@@ -78,22 +77,22 @@ func ui(main func()) error {
 var (
 	_NSApplication = objc_getClass("NSApplication")
 
-	_sharedApplication = sel_getUid("sharedApplication")
-	_setActivationPolicy = sel_getUid("setActivationPolicy:")
+	_sharedApplication         = sel_getUid("sharedApplication")
+	_setActivationPolicy       = sel_getUid("setActivationPolicy:")
 	_activateIgnoringOtherApps = sel_getUid("activateIgnoringOtherApps:")
 	// _setDelegate in sysdata_darwin.go
 )
 
 func initCocoa() (NSApp C.id, err error) {
-	C.initBleh()		// initialize bleh_darwin.m functions
+	C.initBleh() // initialize bleh_darwin.m functions
 	NSApp = C.objc_msgSend_noargs(_NSApplication, _sharedApplication)
 	r := C.objc_msgSend_int(NSApp, _setActivationPolicy,
-		0)			// NSApplicationActivationPolicyRegular
+		0) // NSApplicationActivationPolicyRegular
 	if C.BOOL(uintptr(unsafe.Pointer(r))) != C.BOOL(C.YES) {
 		err = fmt.Errorf("error setting NSApplication activation policy (basically identifies our program as a separate program; needed for several things, such as Dock icon, application menu, window resizing, etc.) (unknown reason)")
 		return
 	}
-	C.objc_msgSend_bool(NSApp, _activateIgnoringOtherApps, C.BOOL(C.YES))		// TODO actually do C.NO here? Russ Cox does YES in his devdraw; the docs say the Finder does NO
+	C.objc_msgSend_bool(NSApp, _activateIgnoringOtherApps, C.BOOL(C.YES)) // TODO actually do C.NO here? Russ Cox does YES in his devdraw; the docs say the Finder does NO
 	err = mkAppDelegate()
 	if err != nil {
 		return
@@ -106,6 +105,6 @@ func initCocoa() (NSApp C.id, err error) {
 //export appDelegate_uitask
 func appDelegate_uitask(self C.id, sel C.SEL, arg C.id) {
 	p := C.objc_msgSend_noargs(arg, _pointerValue)
-	f := (*func ())(unsafe.Pointer(p))
+	f := (*func())(unsafe.Pointer(p))
 	(*f)()
 }

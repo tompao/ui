@@ -3,8 +3,8 @@
 package ui
 
 import (
-	"unsafe"
 	"image"
+	"unsafe"
 )
 
 // #cgo LDFLAGS: -lobjc -framework Foundation -framework AppKit
@@ -84,10 +84,10 @@ func areaView_drawRect(self C.id, rect C.struct_xrect) {
 	// TODO clear clip rect
 	// rectangles in Cocoa are origin/size, not point0/point1; if we don't watch for this, weird things will happen when scrolling
 	// TODO change names EVERYWHERE ELSE to match
-	cliprect := image.Rect(int(rect.x), int(rect.y), int(rect.x + rect.width), int(rect.y + rect.height))
+	cliprect := image.Rect(int(rect.x), int(rect.y), int(rect.x+rect.width), int(rect.y+rect.height))
 	max := C.objc_msgSend_stret_rect_noargs(self, _frame)
 	cliprect = image.Rect(0, 0, int(max.width), int(max.height)).Intersect(cliprect)
-	if cliprect.Empty() {			// no intersection; nothing to paint
+	if cliprect.Empty() { // no intersection; nothing to paint
 		return
 	}
 	i := s.handler.Paint(cliprect)
@@ -107,18 +107,18 @@ func areaView_isFlipped_acceptsFirstResponder(self C.id, sel C.SEL) C.BOOL {
 var (
 	_NSEvent = objc_getClass("NSEvent")
 
-	_modifierFlags = sel_getUid("modifierFlags")
-	_buttonNumber = sel_getUid("buttonNumber")
-	_clickCount = sel_getUid("clickCount")
+	_modifierFlags       = sel_getUid("modifierFlags")
+	_buttonNumber        = sel_getUid("buttonNumber")
+	_clickCount          = sel_getUid("clickCount")
 	_pressedMouseButtons = sel_getUid("pressedMouseButtons")
 )
 
 func parseModifiers(e C.id) (m Modifiers) {
 	const (
-		_NSShiftKeyMask = 1 << 17
-		_NSControlKeyMask = 1 << 18
+		_NSShiftKeyMask     = 1 << 17
+		_NSControlKeyMask   = 1 << 18
 		_NSAlternateKeyMask = 1 << 19
-		_NSCommandKeyMask = 1 << 20
+		_NSCommandKeyMask   = 1 << 20
 	)
 
 	mods := uintptr(C.objc_msgSend_uintret_noargs(e, _modifierFlags))
@@ -146,7 +146,7 @@ func areaMouseEvent(self C.id, e C.id, click bool, up bool) {
 	// no need to check me.Pos; Cocoa won't send an event outside the Area
 	me.Modifiers = parseModifiers(e)
 	which := uint(C.objc_msgSend_intret_noargs(e, _buttonNumber)) + 1
-	if which == 3 {		// swap middle and right button numbers
+	if which == 3 { // swap middle and right button numbers
 		which = 2
 	} else if which == 2 {
 		which = 3
@@ -157,23 +157,23 @@ func areaMouseEvent(self C.id, e C.id, click bool, up bool) {
 		me.Down = which
 		me.Count = uint(C.objc_msgSend_intret_noargs(e, _clickCount))
 	} else {
-		which = 0			// reset for Held processing below
+		which = 0 // reset for Held processing below
 	}
 	// pressedMouseButtons is a class method; calling objc_msgSend() directly with e as an argument on these will panic (in real Objective-C the compiler can detect [e pressedMouseButtons])
 	held := C.objc_msgSend_uintret_noargs(_NSEvent, _pressedMouseButtons)
-	if which != 1 && (held & 1) != 0 {		// button 1
+	if which != 1 && (held&1) != 0 { // button 1
 		me.Held = append(me.Held, 1)
 	}
-	if which != 2 && (held & 4) != 0 {		// button 2; mind the swap
+	if which != 2 && (held&4) != 0 { // button 2; mind the swap
 		me.Held = append(me.Held, 2)
 	}
-	if which != 3 && (held & 2) != 0 {		// button 3
+	if which != 3 && (held&2) != 0 { // button 3
 		me.Held = append(me.Held, 3)
 	}
 	// TODO remove this part?
 	held >>= 3
 	for i := uint(4); held != 0; i++ {
-		if which != i && (held & 1) != 0 {
+		if which != i && (held&1) != 0 {
 			me.Held = append(me.Held, i)
 		}
 		held >>= 1
@@ -252,8 +252,8 @@ func areaView_flagsChanged(self C.id, sel C.SEL, e C.id) {
 	// Mac OS X sends this event on both key up and key down.
 	// Fortunately -[e keyCode] IS valid here, so we can simply map from key code to Modifiers, get the value of [e modifierFlags], the respective bit is set or not — that will give us the up/down state
 	keyCode := uintptr(C.objc_msgSend_ushortret_noargs(e, _keyCode))
-	mod, ok := keycodeModifiers[keyCode]		// comma-ok form to avoid adding entries
-	if !ok {		// unknown modifier; ignore
+	mod, ok := keycodeModifiers[keyCode] // comma-ok form to avoid adding entries
+	if !ok {                             // unknown modifier; ignore
 		handleKeyEvent(self)
 		return
 	}

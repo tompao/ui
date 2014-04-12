@@ -5,7 +5,7 @@
 package ui
 
 import (
-	// ...
+// ...
 )
 
 // GTK+ 3 makes this easy: controls can tell us what their preferred size is!

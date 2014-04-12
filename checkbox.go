@@ -10,18 +10,18 @@ import (
 type Checkbox struct {
 	// TODO provide a channel for broadcasting check changes
 
-	lock			sync.Mutex
-	created		bool
-	sysData		*sysData
-	initText		string
-	initCheck		bool
+	lock      sync.Mutex
+	created   bool
+	sysData   *sysData
+	initText  string
+	initCheck bool
 }
 
 // NewCheckbox creates a new checkbox with the specified text.
 func NewCheckbox(text string) (c *Checkbox) {
 	return &Checkbox{
-		sysData:	mksysdata(c_checkbox),
-		initText:	text,
+		sysData:  mksysdata(c_checkbox),
+		initText: text,
 	}
 }
 
@@ -74,11 +74,11 @@ func (c *Checkbox) make(window *sysData) error {
 
 func (c *Checkbox) setRect(x int, y int, width int, height int, rr *[]resizerequest) {
 	*rr = append(*rr, resizerequest{
-		sysData:	c.sysData,
-		x:		x,
-		y:		y,
-		width:	width,
-		height:	height,
+		sysData: c.sysData,
+		x:       x,
+		y:       y,
+		width:   width,
+		height:  height,
 	})
 }
 

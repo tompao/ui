@@ -15,7 +15,7 @@ import (
 // GtkWidget *gtkNewMsgBox(GtkMessageType type, GtkButtonsType buttons, char *title, char *text)
 // {
 // 	GtkWidget *k;
-// 
+//
 // 	k = gtk_message_dialog_new(NULL, GTK_DIALOG_MODAL, type, buttons, "%s", (gchar *) title);
 // 	if (text != NULL)
 // 		gtk_message_dialog_format_secondary_text((GtkMessageDialog *) k, "%s", (gchar *) text);

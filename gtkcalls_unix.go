@@ -71,7 +71,7 @@ var gtkLayoutCSS = []byte(`GtkLayout {
 `)
 
 func makeTransparent(layout *C.GtkWidget) {
-	var err *C.GError = nil		// redundant in Go, but let's explicitly assign it anyway
+	var err *C.GError = nil // redundant in Go, but let's explicitly assign it anyway
 
 	provider := C.gtk_css_provider_new()
 	added := C.gtk_css_provider_load_from_data(provider,

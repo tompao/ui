@@ -18,13 +18,13 @@ import (
 // Unlike other UI toolkit Grids, this Grid does not (yet? TODO) allow Controls to span multiple rows or columns.
 // TODO differnet row/column control alignment
 type Grid struct {
-	lock					sync.Mutex
-	created				bool
-	controls				[][]Control
-	filling				[][]bool
-	stretchyrow, stretchycol	int
-	widths, heights			[][]int		// caches to avoid reallocating each time
-	rowheights, colwidths	[]int
+	lock                     sync.Mutex
+	created                  bool
+	controls                 [][]Control
+	filling                  [][]bool
+	stretchyrow, stretchycol int
+	widths, heights          [][]int // caches to avoid reallocating each time
+	rowheights, colwidths    []int
 }
 
 // NewGrid creates a new Grid with the given Controls.
@@ -36,7 +36,7 @@ type Grid struct {
 // 		control10, control11, control12,
 // 		control20, control21, control22)
 func NewGrid(nPerRow int, controls ...Control) *Grid {
-	if len(controls) % nPerRow != 0 {
+	if len(controls)%nPerRow != 0 {
 		panic(fmt.Errorf("incomplete grid given to NewGrid() (not enough controls to evenly divide %d controls into rows of %d controls each)", len(controls), nPerRow))
 	}
 	nRows := len(controls) / nPerRow
@@ -56,14 +56,14 @@ func NewGrid(nPerRow int, controls ...Control) *Grid {
 		}
 	}
 	return &Grid{
-		controls:		cc,
-		filling:		cf,
-		stretchyrow:	-1,
-		stretchycol:	-1,
-		widths:		cw,
-		heights:		ch,
-		rowheights:	make([]int, nRows),
-		colwidths:		make([]int, nPerRow),
+		controls:    cc,
+		filling:     cf,
+		stretchyrow: -1,
+		stretchycol: -1,
+		widths:      cw,
+		heights:     ch,
+		rowheights:  make([]int, nRows),
+		colwidths:   make([]int, nPerRow),
 	}
 }
 

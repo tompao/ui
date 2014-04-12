@@ -40,7 +40,7 @@ var (
 	_NSMutableDictionary = objc_getClass("NSMutableDictionary")
 
 	_dictionaryWithObjectForKey = sel_getUid("dictionaryWithObject:forKey:")
-	_objectForKey = sel_getUid("objectForKey:")
+	_objectForKey               = sel_getUid("objectForKey:")
 
 	listboxItemKey = toNSString(_listboxItemKey)
 )
@@ -77,11 +77,11 @@ var (
 	_NSArrayController = objc_getClass("NSArrayController")
 
 	_setAutomaticallyRearrangesObjects = sel_getUid("setAutomaticallyRearrangesObjects:")
-	_addObject = sel_getUid("addObject:")
+	_addObject                         = sel_getUid("addObject:")
 	_insertObjectAtArrangedObjectIndex = sel_getUid("insertObject:atArrangedObjectIndex:")
 	_removeObjectAtArrangedObjectIndex = sel_getUid("removeObjectAtArrangedObjectIndex:")
-	_arrangedObjects = sel_getUid("arrangedObjects")
-	_objectAtIndex = sel_getUid("objectAtIndex:")
+	_arrangedObjects                   = sel_getUid("arrangedObjects")
+	_objectAtIndex                     = sel_getUid("objectAtIndex:")
 )
 
 func newListboxArray() C.id {
@@ -110,7 +110,6 @@ func indexListboxArray(array C.id, index int) string {
 	return fromListboxItem(dict)
 }
 
-
 /*
 Now we have to establish the binding. To do this, we need the following things:
 	- the object to bind (NSTableColumn)
@@ -130,7 +129,7 @@ const (
 
 var (
 	_bindToObjectWithKeyPathOptions = sel_getUid("bind:toObject:withKeyPath:options:")
-	_infoForBinding = sel_getUid("infoForBinding:")
+	_infoForBinding                 = sel_getUid("infoForBinding:")
 
 	tableColumnBinding = toNSString("value")
 	listboxItemKeyPath = toNSString(_listboxItemKeyPath)
@@ -140,7 +139,7 @@ func bindListboxArray(tableColumn C.id, array C.id) {
 	C.objc_msgSend_id_id_id_id(tableColumn, _bindToObjectWithKeyPathOptions,
 		tableColumnBinding,
 		array, listboxItemKeyPath,
-		C.nilid)				// no options
+		C.nilid) // no options
 }
 
 func listboxArrayController(tableColumn C.id) C.id {
@@ -159,10 +158,10 @@ Editability is also handled here, as opposed to in NSTableView itself.
 var (
 	_NSTableColumn = objc_getClass("NSTableColumn")
 
-	_initWithIdentifier = sel_getUid("initWithIdentifier:")
+	_initWithIdentifier        = sel_getUid("initWithIdentifier:")
 	_tableColumnWithIdentifier = sel_getUid("tableColumnWithIdentifier:")
-	_dataCell = sel_getUid("dataCell")
-	_setDataCell = sel_getUid("setDataCell:")
+	_dataCell                  = sel_getUid("dataCell")
+	_setDataCell               = sel_getUid("setDataCell:")
 	// _setEditable in sysdata_darwin.go
 )
 
@@ -191,11 +190,11 @@ var (
 	_NSScrollView = objc_getClass("NSScrollView")
 
 	_setHasHorizontalScroller = sel_getUid("setHasHorizontalScroller:")
-	_setHasVerticalScroller = sel_getUid("setHasVerticalScroller:")
-	_setAutohidesScrollers = sel_getUid("setAutohidesScrollers:")
-	_setBorderType = sel_getUid("setBorderType:")
-	_setDocumentView = sel_getUid("setDocumentView:")
-	_documentView = sel_getUid("documentView")
+	_setHasVerticalScroller   = sel_getUid("setHasVerticalScroller:")
+	_setAutohidesScrollers    = sel_getUid("setAutohidesScrollers:")
+	_setBorderType            = sel_getUid("setBorderType:")
+	_setDocumentView          = sel_getUid("setDocumentView:")
+	_documentView             = sel_getUid("documentView")
 )
 
 func newListboxScrollView(listbox C.id) C.id {
@@ -208,7 +207,7 @@ func newListboxScrollView(listbox C.id) C.id {
 	C.objc_msgSend_bool(scrollview, _setHasHorizontalScroller, C.BOOL(C.YES))
 	C.objc_msgSend_bool(scrollview, _setHasVerticalScroller, C.BOOL(C.YES))
 	C.objc_msgSend_bool(scrollview, _setAutohidesScrollers, C.BOOL(C.YES))
-	C.objc_msgSend_uint(scrollview, _setBorderType, _NSBezelBorder)		// this is what Interface Builder gives the scroll view
+	C.objc_msgSend_uint(scrollview, _setBorderType, _NSBezelBorder) // this is what Interface Builder gives the scroll view
 	C.objc_msgSend_id(scrollview, _setDocumentView, listbox)
 	return scrollview
 }
@@ -234,13 +233,13 @@ We'll handle selections from the NSTableView too. The only trickery is dealing w
 var (
 	_NSTableView = objc_getClass("NSTableView")
 
-	_addTableColumn = sel_getUid("addTableColumn:")
+	_addTableColumn             = sel_getUid("addTableColumn:")
 	_setAllowsMultipleSelection = sel_getUid("setAllowsMultipleSelection:")
-	_setAllowsEmptySelection = sel_getUid("setAllowsEmptySelection:")
-	_setHeaderView = sel_getUid("setHeaderView:")
-	_selectedRowIndexes = sel_getUid("selectedRowIndexes")
-	_count = sel_getUid("count")
-	_numberOfRows = sel_getUid("numberOfRows")
+	_setAllowsEmptySelection    = sel_getUid("setAllowsEmptySelection:")
+	_setHeaderView              = sel_getUid("setHeaderView:")
+	_selectedRowIndexes         = sel_getUid("selectedRowIndexes")
+	_count                      = sel_getUid("count")
+	_numberOfRows               = sel_getUid("numberOfRows")
 )
 
 func makeListbox(parentWindow C.id, alternate bool) C.id {

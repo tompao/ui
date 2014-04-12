@@ -11,16 +11,16 @@ import (
 type Combobox struct {
 	// TODO Select event
 
-	lock		sync.Mutex
-	created	bool
-	sysData	*sysData
-	initItems	[]string
+	lock      sync.Mutex
+	created   bool
+	sysData   *sysData
+	initItems []string
 }
 
 func newCombobox(editable bool, items ...string) (c *Combobox) {
 	c = &Combobox{
-		sysData:		mksysdata(c_combobox),
-		initItems:		items,
+		sysData:   mksysdata(c_combobox),
+		initItems: items,
 	}
 	c.sysData.alternate = editable
 	return c
@@ -69,7 +69,7 @@ func (c *Combobox) InsertBefore(what string, before int) {
 	if before < 0 || before >= len(c.initItems) {
 		goto badrange
 	}
-	m = make([]string, 0, len(c.initItems) + 1)
+	m = make([]string, 0, len(c.initItems)+1)
 	m = append(m, c.initItems[:before]...)
 	m = append(m, what)
 	c.initItems = append(m, c.initItems[before:]...)
@@ -93,7 +93,7 @@ func (c *Combobox) Delete(index int) {
 	if index < 0 || index >= len(c.initItems) {
 		goto badrange
 	}
-	c.initItems = append(c.initItems[:index], c.initItems[index + 1:]...)
+	c.initItems = append(c.initItems[:index], c.initItems[index+1:]...)
 	return
 badrange:
 	panic(fmt.Errorf("index %d out of range in Combobox.Delete()", index))
@@ -151,11 +151,11 @@ func (c *Combobox) make(window *sysData) (err error) {
 
 func (c *Combobox) setRect(x int, y int, width int, height int, rr *[]resizerequest) {
 	*rr = append(*rr, resizerequest{
-		sysData:	c.sysData,
-		x:		x,
-		y:		y,
-		width:	width,
-		height:	height,
+		sysData: c.sysData,
+		x:       x,
+		y:       y,
+		width:   width,
+		height:  height,
 	})
 }
 
